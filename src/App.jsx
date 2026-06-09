@@ -424,4 +424,184 @@ export default function WorkoutTracker() {
                                 color: isDone ? "#3a6a5a" : dayData.accent,
                                 padding: "2px 4px", fontSize: "13px",
                                 fontFamily: "'DM Sans', sans-serif", fontWeight: 600,
-                                textDecoration: isDone ? "line
+                                textDecoration: isDone ? "line-through" : "none"
+                              }}
+                            />
+                            <span style={{ fontSize: "9px", color: "#2a2a4a", fontWeight: 600, flexShrink: 0 }}>KG</span>
+                            {/* Set checkbox */}
+                            <button className="set-check" onClick={() => toggleSet(currentWeek, activeDay, i, s)} style={{
+                              width: "22px", height: "22px", flexShrink: 0, borderRadius: "5px",
+                              background: isDone ? "linear-gradient(135deg,#10B981,#06B6D4)" : "rgba(255,255,255,0.05)",
+                              border: `1px solid ${isDone ? "transparent" : "rgba(255,255,255,0.1)"}`,
+                              color: "#fff", cursor: "pointer", fontSize: "11px",
+                              display: "flex", alignItems: "center", justifyContent: "center",
+                              boxShadow: isDone ? "0 2px 8px rgba(16,185,129,0.4)" : "none"
+                            }}>
+                              {isDone ? "✓" : ""}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Notes */}
+                    <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "10px" }}>
+                      <div style={{ fontSize: "8px", color: "#3a3a5a", letterSpacing: "2px", fontWeight: 600, marginBottom: "6px" }}>
+                        📝 NOTES
+                      </div>
+                      <textarea
+                        rows={2}
+                        placeholder="Form cues, weight goals, how it felt..."
+                        value={noteVal}
+                        onChange={e => updateNote(currentWeek, activeDay, i, e.target.value)}
+                        style={{
+                          width: "100%", background: "rgba(255,255,255,0.03)",
+                          border: "1px solid rgba(255,255,255,0.07)", borderRadius: "6px",
+                          color: "#8888aa", padding: "8px 10px", fontSize: "11px",
+                          fontFamily: "'DM Sans', sans-serif", lineHeight: "1.5",
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Overload rule */}
+            <div style={{
+              marginTop: "16px", padding: "12px 16px", borderRadius: "10px",
+              background: "linear-gradient(135deg, rgba(249,115,22,0.08), rgba(239,68,68,0.05))",
+              border: "1px solid rgba(249,115,22,0.2)",
+              fontSize: "11px", color: "#f97316", letterSpacing: "0.5px", lineHeight: "1.6", fontWeight: 500
+            }}>
+              ⚡ Add 2.5kg when all reps are clean. No exceptions. No excuses.
+            </div>
+
+            {/* End Session Button */}
+            {!sessionDone ? (
+              !showConfirm ? (
+                <button className="end-btn" onClick={() => setShowConfirm(true)} style={{
+                  marginTop: "16px", width: "100%", padding: "16px",
+                  background: "linear-gradient(135deg, #1a1a2e, #13131f)",
+                  border: `1px solid ${dayData.accent}44`,
+                  borderRadius: "12px", color: dayData.accent,
+                  fontSize: "12px", letterSpacing: "3px", fontWeight: 700,
+                  cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+                  textTransform: "uppercase"
+                }}>
+                  END SESSION
+                </button>
+              ) : (
+                <div style={{
+                  marginTop: "16px", padding: "16px", borderRadius: "12px",
+                  background: "linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.06))",
+                  border: "1px solid rgba(99,102,241,0.3)", textAlign: "center"
+                }}>
+                  <div style={{ fontSize: "12px", color: "#c8c8e0", marginBottom: "4px", fontWeight: 600 }}>
+                    End session with {dayPct}% completion?
+                  </div>
+                  <div style={{ fontSize: "10px", color: "#5a5a7a", marginBottom: "14px" }}>
+                    {getDoneSets(currentWeek, activeDay)} of {getTotalSets(activeDay)} sets done
+                  </div>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <button onClick={() => setShowConfirm(false)} style={{
+                      flex: 1, padding: "10px", background: "transparent",
+                      border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px",
+                      color: "#5a5a7a", fontSize: "11px", letterSpacing: "2px",
+                      cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontWeight: 600
+                    }}>CANCEL</button>
+                    <button onClick={() => endSession(currentWeek, activeDay)} style={{
+                      flex: 2, padding: "10px",
+                      background: "linear-gradient(135deg,#6366F1,#8B5CF6)",
+                      border: "none", borderRadius: "8px",
+                      color: "#fff", fontSize: "11px", letterSpacing: "2px",
+                      cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontWeight: 700
+                    }}>CONFIRM END SESSION</button>
+                  </div>
+                </div>
+              )
+            ) : (
+              <div style={{
+                marginTop: "16px", width: "100%", padding: "14px",
+                background: "rgba(16,185,129,0.06)",
+                border: "1px solid rgba(16,185,129,0.2)",
+                borderRadius: "12px", color: "#10B981",
+                fontSize: "11px", letterSpacing: "3px", fontWeight: 700,
+                textAlign: "center", fontFamily: "'DM Sans', sans-serif"
+              }}>
+                ✓ SESSION LOGGED
+              </div>
+            )}
+          </div>
+
+        ) : (
+          /* Overview */
+          <div style={{ padding: "20px" }} className="fade-in">
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "22px", letterSpacing: "3px", color: "#888", marginBottom: "18px" }}>
+              12-WEEK OVERVIEW
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+              {Array.from({ length: TOTAL_WEEKS }, (_, w) => {
+                const pct = getWeekProgress(w);
+                const isCurrent = w === currentWeek;
+                return (
+                  <div key={w} className="week-row" onClick={() => { setCurrentWeek(w); setView("tracker"); }}
+                    style={{
+                      background: isCurrent ? "linear-gradient(135deg,rgba(99,102,241,0.1),rgba(139,92,246,0.06))" : "#111118",
+                      border: `1px solid ${isCurrent ? "rgba(99,102,241,0.35)" : "rgba(255,255,255,0.05)"}`,
+                      borderRadius: "10px", padding: "12px 14px", cursor: "pointer",
+                      display: "flex", alignItems: "center", gap: "14px",
+                      boxShadow: isCurrent ? "0 2px 20px rgba(99,102,241,0.15)" : "none"
+                    }}>
+                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "16px", letterSpacing: "2px", color: isCurrent ? "#818CF8" : "#333344", width: "48px", flexShrink: 0 }}>
+                      W{String(w + 1).padStart(2, "0")}
+                    </div>
+                    <div style={{ flex: 1, height: "5px", background: "rgba(255,255,255,0.05)", borderRadius: "3px", overflow: "hidden" }}>
+                      <div style={{
+                        height: "100%", width: `${pct}%`, borderRadius: "3px",
+                        background: pct === 100 ? "linear-gradient(90deg,#10B981,#06B6D4)" : isCurrent ? "linear-gradient(90deg,#6366F1,#8B5CF6)" : "linear-gradient(90deg,#2a2a4a,#3a3a5a)",
+                        transition: "width 0.5s ease"
+                      }} />
+                    </div>
+                    <div style={{ fontSize: "11px", fontWeight: 600, color: pct === 100 ? "#10B981" : isCurrent ? "#818CF8" : "#2a2a4a", width: "34px", textAlign: "right", flexShrink: 0 }}>
+                      {pct > 0 ? `${pct}%` : "—"}
+                    </div>
+                    <div style={{ display: "flex", gap: "3px" }}>
+                      {DAYS_ORDER.map(day => {
+                        const done = isSessionDone(w, day);
+                        const pctDay = getDayPct(w, day);
+                        return (
+                          <div key={day} title={`${day}: ${pctDay}%`} style={{
+                            width: "7px", height: "7px", borderRadius: "2px",
+                            background: done ? PROGRAM[day].accent : pctDay > 0 ? PROGRAM[day].accent + "44" : "rgba(255,255,255,0.06)",
+                            boxShadow: done ? `0 0 6px ${PROGRAM[day].glow}` : "none"
+                          }} />
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ marginTop: "20px", padding: "14px 16px", borderRadius: "10px", background: "#111118", border: "1px solid rgba(255,255,255,0.05)" }}>
+              <div style={{ fontSize: "9px", color: "#3a3a5a", letterSpacing: "3px", marginBottom: "10px", fontWeight: 600 }}>LEGEND</div>
+              <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+                {DAYS_ORDER.map(day => (
+                  <div key={day} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <div style={{ width: "8px", height: "8px", borderRadius: "2px", background: PROGRAM[day].gradient }} />
+                    <span style={{ fontSize: "9px", color: "#3a3a5a", letterSpacing: "2px", fontWeight: 600 }}>
+                      {day.slice(0, 3).toUpperCase()} · {PROGRAM[day].label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: "10px", fontSize: "9px", color: "#2a2a4a", lineHeight: "1.8" }}>
+                Bright dot = session ended · Dim dot = partial progress · Empty = not started
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
